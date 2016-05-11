@@ -23,67 +23,58 @@ var url = require('url');
 // 	});
 // }
 
-// var actions = {
+var actions = {
 
-//     'GET': function(request, response) {
+  'GET': function(request, response) {
 		
-// 	var path = url.parse(request.url).pathname;
+    var path = url.parse(request.url).pathname;
 	
-// 	//the path will always be /sitename
-
-// 	if(path === '/') {
-// 		path = '/index.html';
-// 	}
-
-// 	helpers.serveAssets(response, path, function(status, type, content) {
-// 		response.writeHead(status, {'Content-Type': type});
-// 		response.end(content);
-// 	});
+	//the path will always be /sitename
+    if (path === '/') {
+      path = '/index.html';
+    }  
+    helpers.serveAssets(response, path, function(status, type, content) {
+      response.writeHead(status, {'Content-Type': type});
+      response.end(content);
+    });
 	
-// 	},
+  },
 
-// 'POST': function(request, response) {
+  'POST': function(request, response) {
 
-// 	var path = url.parse(request.url).pathname;
-// 	// if(path === '/') {
-// 	// 	path = '/index.html';
-// 	// }
+    var path = url.parse(request.url).pathname;
 
-// 	console.log('therequest', request);
-// 	console.log(archive.paths.list);
-// 	// var data = '';
-// 		// request.on('send', function(data) { 
-// 		// 	// console.log('data', data);
-// 		//  // 	fs.appendFile(archive.paths.list, JSON.parse(data) + '\n', function(err) {
-// 	 //  //     console.log('error', err);
-// 	 //  //   })
-// 	 //  	data += data;
-// 		// });   
+    var body = '';
+    request.on('data', function(chunk) {
+      body += chunk;
+    });
 
-// 		// request.on('end', function() {
-// 		// 	console.log('asdf', data);
-// 		// 	fs.appendFile(archive.paths.list, JSON.parse(data) + '\n', function(err) {
-// 	 //    console.log('error', err);
-// 	 //    })
-// 		// });
-// // 		collectData(request, function(message){
-// // //			sendResponse(response, null);
-// // 		});
+    request.on('end', function() {
+      body = body.slice(4);
+      body += '\n';
+      fs.appendFile(archive.paths.list, body, 'utf8', function(err) {
+        if(err) {
+          throw err;
+        }
+        response.writeHead(302, helpers.headers);
+        response.end();
+      });
+    });
 		
-// 	}
-// }
+  }
+};
 
 
-// exports.handleRequest = function (request, response) {
+exports.handleRequest = function (request, response) {
 
 
-// 	var action = actions[request.method];
-// 	if( action ) {
-// 		action(request, response);
-// 	} else {
-// 		//handle error
-// 	}
+  var action = actions[request.method];
+  if ( action ) {
+    action(request, response);
+  } else {
+		//handle error
+  }
 	
-// 	//archive.paths.list is the list of urls in sites.txt
-//   //response.end(archive.paths.list);
-// };
+	//archive.paths.list is the list of urls in sites.txt
+  //response.end(archive.paths.list);
+};
