@@ -56,7 +56,7 @@ var actions = {
             if (err) {
               throw err;
             }
-            helpers.serveAssets(response, '/index.html', function(status, type, content) {
+            helpers.serveAssets(response, '/loading.html', function(status, type, content) {
               response.writeHead(status, {'Content-Type': type});
               response.end(content);
             });
