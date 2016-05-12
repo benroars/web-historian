@@ -4,8 +4,8 @@ var archive = require('../helpers/archive-helpers');
 
 var cron = require('cron');
 
-var cronJob = cron.job('*/5 * * * * *', function() {
- // exports.fileDownloader();
+var cronJob = cron.job('*/10 * * * * *', function() {
+  exports.fileDownloader();
   console.log('cron completed');
 });
 
@@ -17,8 +17,6 @@ exports.fileDownloader = function() {
     archive.downloadUrls(data);
   });
 
-
-  //console.log('run ? ');
 };
 
-//cronJob.start();
+cronJob.start();
