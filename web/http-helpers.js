@@ -22,7 +22,7 @@ exports.serveAssets = function(response, asset, callback) {
   }
 
   if (asset.split('.')[2] === 'com') {
-    console.log('found com', archive.paths.archivedSites + asset);
+   // console.log('found com', archive.paths.archivedSites + asset);
     fs.readFile(archive.paths.archivedSites + asset, function(error, content) {
       if (error) {
         console.log('error', error);

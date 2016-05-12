@@ -32,6 +32,8 @@ var actions = {
 	//the path will always be /sitename
     if (path === '/') {
       path = '/index.html';
+      // path = '../../archives/sites/www.google.com';
+     // path = '/www.google.com';
     }  
     helpers.serveAssets(response, path, function(status, type, content) {
       response.writeHead(status, {'Content-Type': type});
@@ -51,14 +53,28 @@ var actions = {
 
     request.on('end', function() {
       body = body.slice(4);
-      body += '\n';
-      fs.appendFile(archive.paths.list, body, 'utf8', function(err) {
-        if(err) {
-          throw err;
+
+
+      archive.isUrlArchived(body, function(bool) {
+        if (bool) {
+          body = "/" + body;
+          console.log('should be /www.google.com', body);
+          helpers.serveAssets(response, body, function(status, type, content) {
+            response.writeHead(status, {'Content-Type': type});
+            response.end(content);
+          });
+        } else {
+          body += '\n';
+          fs.appendFile(archive.paths.list, body, 'utf8', function(err) {
+            if (err) {
+              throw err;
+            }
+            response.writeHead(302, helpers.headers);
+            response.end();
+          });
+
         }
-        response.writeHead(302, helpers.headers);
-        response.end();
-      });
+      });  
     });
 		
   }
